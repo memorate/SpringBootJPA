@@ -1,15 +1,17 @@
-package com.anchor.model;
+package com.jpa.model;
 
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
+import javax.persistence.Table;
 
 @Entity
-public class Users {
+@Table(name = "users")
+public class User {
 
     @Id
     @GeneratedValue
-    private long id;
+    private Long id;
 
     private String name;
 
@@ -17,11 +19,11 @@ public class Users {
 
     private String description;
 
-    public long getId() {
+    public Long getId() {
         return id;
     }
 
-    public void setId(long id) {
+    public void setId(Long id) {
         this.id = id;
     }
 

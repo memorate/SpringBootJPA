@@ -15,39 +15,77 @@ import java.util.List;
 
 @Repository
 public interface UsersRepository extends JpaRepository<User,Long> {
+    /**
+     * 四个普通的约定方法
+     *
+     * find、read、query、get开头都可
+     */
+    User findByNameAndAge(String name, int age);
     List<User> readByAgeLessThanEqual(int age);
     List<User> queryByNameStartingWith(String word);
     List<User> getByDescriptionIsNotNull();
 
+    /**
+     * 约定方法进行删除，必须加@Transactional和@Modifying注解
+     *
+     * 这两个注解加在调用此方法的方法上也可以
+     */
     @Transactional
     @Modifying
-    int deleteByName(String name);
+    int deleteByAge(int age);
 
-    @Transactional
-    @Modifying
-    int deleteUserByName(String name);
+    /**
+     * 约定方法 - 排序
+     *
+     * 命名需按照约定，再传入Sort对象即可
+     */
+    List<User> readAll(Sort sort);
 
-    List<User> findAll(Sort sort);
+    /**
+     * 约定方法 - 分页
+     *
+     * 命名需按照约定，再传入实现Pageable接口的对象即可
+     */
+    Page<User> readAll(Pageable pageable);
 
-//    @Query("select u from User u")
-//    List<User> findAll(Sort sort);
+    /**
+     * 自定义方法模糊（like）查询
+     * 必须在参数"?1"左右加上%
+     */
+    @Query("select u from User u where u.name like %?1%")
+    List<User> findByNameLike(String word);
 
-//    @Query("select u from User u")
-//    Page<User> findAll(Pageable pageable);
-
-    Page<User> findAll(Pageable pageable);
-
+    /**
+     * 使用"@Param"注解注入参数
+     */
     @Query("select u from User u where u.name = :name and u.age = :age")
-    User findByNameAndAge(@Param("name") String name, @Param("age") int age);
+    User QFindByNameAndAge(@Param("name") String name, @Param("age") int age);
 
-    @Query("select u from User u where u.name like ?1")
-    User findByName(String name);
-
+    /**
+     * 使用原生sql，且使用"@Param"注解注入参数
+     */
     @Query(value = "SELECT * from users where age= :myAge", nativeQuery = true)
-    User findByName(@Param("myAge") int age);
+    User findByAge(@Param("myAge") int age);
 
+    /**
+     * 自定义方法进行更新操作，必须加@Transactional和@Modifying注解
+     *
+     * 这两个注解加在调用此方法的方法上也可以
+     */
     @Transactional
     @Modifying
-    @Query(value = "UPDATE users set name=?1 where age=35", nativeQuery = true)
-    int updateSpecific(String name);
+    @Query(value = "UPDATE users set age=?1 where id=?2", nativeQuery = true)
+    int updateSpecific(int age, long id);
+
+    /**
+     * 自定方法 - 排序
+     */
+    @Query("select u from User u")
+    List<User> QFindAll(Sort sort);
+
+    /**
+     * 自定方法 - 分页
+     */
+    @Query("select u from User u")
+    Page<User> QFindAll(Pageable pageable);
 }

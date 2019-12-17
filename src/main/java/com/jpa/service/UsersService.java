@@ -68,22 +68,22 @@ public class UsersService {
     }
 
     /**
-     * 使用约定方法 - 查询所有User且根据id增序排序
+     * 使用约定方法 - 根据age查询UserList且根据id增序排序
      */
     public List<User> readAllSortByDefault() {
         Sort sort = Sort.by(Sort.Direction.ASC, "id");
-        return usersRepository.readAll(sort);
+        return usersRepository.findByAge(sort);
     }
 
     /**
-     * 使用约定方法 - 分页查询User且按name字母顺序增序排序
+     * 使用约定方法 - 根据age分页查询UserPage且按name字母顺序增序排序
      *
      * @return 返回 Page<User>
      */
     public Page<User> readAllPageByDefault(int pageNum, int pageSize) {
         Sort sort = Sort.by(Sort.Direction.ASC, "name");
         PageRequest pageRequest = PageRequest.of(pageNum, pageSize, sort);
-        return usersRepository.readAll(pageRequest);
+        return usersRepository.findByAge(pageRequest);
     }
 
     /**
@@ -102,22 +102,24 @@ public class UsersService {
 
 
     /**
-     * 使用自定义方法 - 查询所有User且先根据id增序、再按age降序排序
+     * 使用自定义方法 - 根据age查询UserList且先根据id增序、再按age降序排序
+     *
      * @return
      */
-    public List<User> multiSort() {
+    public List<User> multiSort(int age) {
         Sort.Order idOrder = Sort.Order.asc("id");
         Sort.Order nameOrder = Sort.Order.desc("age");
-        return usersRepository.QFindAll(Sort.by(idOrder, nameOrder));
+        return usersRepository.findByAgeAndSort(age, Sort.by(idOrder, nameOrder));
     }
 
     /**
-     * 使用自定义方法 - 查询所有User且先根据name长度排序
+     * 使用自定义方法 - 根据age查询UserList且先根据name长度排序
+     *
      * @return
      */
-    public List<User> lengthSort() {
+    public List<User> sortByLength(int age) {
         JpaSort jpaSort = JpaSort.unsafe(Sort.Direction.ASC, "LENGTH(name)");
-        return usersRepository.QFindAll(jpaSort);
+        return usersRepository.findByAgeAndSort(age, jpaSort);
     }
 
 }

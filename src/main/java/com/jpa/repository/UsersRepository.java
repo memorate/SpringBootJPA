@@ -15,6 +15,7 @@ import java.util.List;
 
 @Repository
 public interface UsersRepository extends JpaRepository<User,Long> {
+    /*************************************普通约定方法使用*****************************************/
     /**
      * 四个普通的约定方法
      *
@@ -34,19 +35,25 @@ public interface UsersRepository extends JpaRepository<User,Long> {
     @Modifying
     int deleteByAge(int age);
 
+
+    /*************************************约定方法排序和分页*****************************************/
+
     /**
      * 约定方法 - 排序
      *
      * 命名需按照约定，再传入Sort对象即可
      */
-    List<User> readAll(Sort sort);
+    List<User> findByAge(Sort sort);
 
     /**
      * 约定方法 - 分页
      *
      * 命名需按照约定，再传入实现Pageable接口的对象即可
      */
-    Page<User> readAll(Pageable pageable);
+    Page<User> findByAge(Pageable pageable);
+
+
+    /*************************************HQL*****************************************/
 
     /**
      * 自定义方法模糊（like）查询
@@ -60,6 +67,15 @@ public interface UsersRepository extends JpaRepository<User,Long> {
      */
     @Query("select u from User u where u.name = :name and u.age = :age")
     User QFindByNameAndAge(@Param("name") String name, @Param("age") int age);
+
+
+    /*************************************SQL*****************************************/
+
+    /**
+     * 使用原生sql
+     */
+    @Query(value = "SELECT * from users where name= ?1", nativeQuery = true)
+    User findByName(String name);
 
     /**
      * 使用原生sql，且使用"@Param"注解注入参数
@@ -77,15 +93,18 @@ public interface UsersRepository extends JpaRepository<User,Long> {
     @Query(value = "UPDATE users set age=?1 where id=?2", nativeQuery = true)
     int updateSpecific(int age, long id);
 
+
+    /*************************************自定义方法排序和分页*****************************************/
+
     /**
      * 自定方法 - 排序
      */
-    @Query("select u from User u")
-    List<User> QFindAll(Sort sort);
+    @Query("select u from User u where u.age = ?1")
+    List<User> findByAgeAndSort(int age, Sort sort);
 
     /**
      * 自定方法 - 分页
      */
-    @Query("select u from User u")
-    Page<User> QFindAll(Pageable pageable);
+    @Query("select u from User u where u.age = ?1")
+    Page<User> findByAgeAndPage(int age, Pageable pageable);
 }

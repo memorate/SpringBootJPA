@@ -70,9 +70,9 @@ public class UsersService {
     /**
      * 使用约定方法 - 根据age查询UserList且根据id增序排序
      */
-    public List<User> readAllSortByDefault() {
+    public List<User> readAllSortByDefault(int age) {
         Sort sort = Sort.by(Sort.Direction.ASC, "id");
-        return usersRepository.findByAge(sort);
+        return usersRepository.findByAge(age, sort);
     }
 
     /**
@@ -80,10 +80,10 @@ public class UsersService {
      *
      * @return 返回 Page<User>
      */
-    public Page<User> readAllPageByDefault(int pageNum, int pageSize) {
+    public Page<User> readAllPageByDefault(int pageNum, int pageSize, int age) {
         Sort sort = Sort.by(Sort.Direction.ASC, "name");
         PageRequest pageRequest = PageRequest.of(pageNum, pageSize, sort);
-        return usersRepository.findByAge(pageRequest);
+        return usersRepository.findByAge(age, pageRequest);
     }
 
     /**

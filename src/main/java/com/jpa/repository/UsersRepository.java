@@ -43,14 +43,14 @@ public interface UsersRepository extends JpaRepository<User,Long> {
      *
      * 命名需按照约定，再传入Sort对象即可
      */
-    List<User> findByAge(Sort sort);
+    List<User> findByAge(int age, Sort sort);
 
     /**
      * 约定方法 - 分页
      *
      * 命名需按照约定，再传入实现Pageable接口的对象即可
      */
-    Page<User> findByAge(Pageable pageable);
+    Page<User> findByAge(int age, Pageable pageable);
 
 
     /*************************************HQL*****************************************/
